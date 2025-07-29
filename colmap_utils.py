@@ -16,8 +16,8 @@ def run_colmap(step, args):
 def run_sfm(image_dir, db_path, sparse_dir):
     os.makedirs(sparse_dir, exist_ok=True)
 
-    # run_colmap('feature_extractor', ['--database_path', db_path, '--image_path', image_dir, '--SiftExtraction.max_image_size', '2048'])
-    # run_colmap('exhaustive_matcher', ['--database_path', db_path])
+    run_colmap('feature_extractor', ['--database_path', db_path, '--image_path', image_dir, '--SiftExtraction.max_image_size', '2048'])
+    run_colmap('exhaustive_matcher', ['--database_path', db_path])
     run_colmap('mapper', ['--database_path', db_path, '--image_path', image_dir, '--output_path', sparse_dir])
 
 def run_dense(image_dir, sparse_dir, dense_dir):
