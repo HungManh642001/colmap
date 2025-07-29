@@ -1,39 +1,39 @@
 import os 
 import argparse 
-import open3d as o3d
+# import open3d as o3d
 import numpy as np
 from colmap_utils import run_sfm, run_dense, run_geo_registration
 
-def cluster_and_compute_obbs(ply_path, voxel_size=0.01, eps=0.05, min_points=30):
-    pc = o3d.io.read_point_cloud(ply_path)
-    pc = pc.voxel_down_sample(voxel_size)
-    labels = np.array(
-        pc.cluster_dbscan(eps=eps, min_points=min_points, print_progress=True)
-    )
-    max_label = labels.max()
-    obbs = []
-    clusters = []
-    for i in range(max_label + 1):
-        idx = np.where(labels == i)[0].tolist()
-        if len(idx) < min_points:
-            continue
-        sub = pc.select_by_index(idx)
-        obb = sub.get_oriented_bounding_box()
-        obbs.append(obb)
-        clusters.append(sub)
-    return pc, clusters, obbs
+# def cluster_and_compute_obbs(ply_path, voxel_size=0.01, eps=0.05, min_points=30):
+#     pc = o3d.io.read_point_cloud(ply_path)
+#     pc = pc.voxel_down_sample(voxel_size)
+#     labels = np.array(
+#         pc.cluster_dbscan(eps=eps, min_points=min_points, print_progress=True)
+#     )
+#     max_label = labels.max()
+#     obbs = []
+#     clusters = []
+#     for i in range(max_label + 1):
+#         idx = np.where(labels == i)[0].tolist()
+#         if len(idx) < min_points:
+#             continue
+#         sub = pc.select_by_index(idx)
+#         obb = sub.get_oriented_bounding_box()
+#         obbs.append(obb)
+#         clusters.append(sub)
+#     return pc, clusters, obbs
 
-def compute_and_show(ply_path, voxel_size=0.01):
-    print(f"Loading {ply_path} ...")
-    pc = o3d.io.read_point_cloud(ply_path)
-    pc = pc.voxel_down_sample(voxel_size)
-    obb = pc.get_oriented_bounding_box()
-    dx, dy, dz = obb.extent
-    print(f"Bounding box (m): dx={dx:.3f}, dy={dy:.3f}, dz={dz:.3f}")
+# def compute_and_show(ply_path, voxel_size=0.01):
+#     print(f"Loading {ply_path} ...")
+#     pc = o3d.io.read_point_cloud(ply_path)
+#     pc = pc.voxel_down_sample(voxel_size)
+#     obb = pc.get_oriented_bounding_box()
+#     dx, dy, dz = obb.extent
+#     print(f"Bounding box (m): dx={dx:.3f}, dy={dy:.3f}, dz={dz:.3f}")
 
-    pc.paint_uniform_color([0.0, 1.0, 0.0])
-    obb.color = [1.0, 0.0, 0.0]
-    o3d.visualization.draw_geometries([pc, obb])
+#     pc.paint_uniform_color([0.0, 1.0, 0.0])
+#     obb.color = [1.0, 0.0, 0.0]
+#     o3d.visualization.draw_geometries([pc, obb])
 
 def main(args):
     os.makedirs("project", exist_ok=True)
